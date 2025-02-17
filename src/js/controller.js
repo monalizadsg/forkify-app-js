@@ -3,6 +3,11 @@ import 'core-js'; // polyfill for everything
 import 'regenerator-runtime/runtime'; // polyfill for async/await
 import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
+import resultsView from './views/resultsView.js';
+
+if (module.hot) {
+  module.hot.accept();
+}
 
 const controlRecipes = async function () {
   try {
@@ -24,6 +29,8 @@ const controlRecipes = async function () {
 
 const controlSearchResults = async function () {
   try {
+    resultsView.renderSpinner();
+
     // get search query
     const query = searchView.getQuery();
 
@@ -31,6 +38,9 @@ const controlSearchResults = async function () {
 
     // load search results
     await model.loadSearchResults(query);
+
+    // render results
+    resultsView.render(model.state.search.results);
   } catch (error) {
     console.log(error);
   }
